@@ -13,8 +13,6 @@ A practical demonstration of how to verify file integrity in untrusted cloud sto
 🚀 **Deployment:**
 👉 [DEPLOYMENT_LINK](https://cloud-data-integrity-verification.vercel.app/)
 
----)
-
 ---
 
 ## 📋 Table of Contents
