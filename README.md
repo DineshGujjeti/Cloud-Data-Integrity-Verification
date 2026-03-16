@@ -8,7 +8,7 @@ A practical demonstration of how to verify file integrity in untrusted cloud sto
 ## 🌐 Live Demo
 
 🚀 **Deployment:**
-👉 [DEPLOYMENT_LINK](https://steganography-lab.vercel.app/)
+👉 [DEPLOYMENT_LINK]([(https://cloud-data-integrity-verification.vercel.app/)])
 
 ---
 
