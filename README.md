@@ -5,6 +5,12 @@
 A practical demonstration of how to verify file integrity in untrusted cloud storage without downloading the entire file, using Merkle hash trees and Provable Data Possession (PDP) protocol.
 
 ---
+## 🌐 Live Demo
+
+🚀 **Deployment:**
+👉 [DEPLOYMENT_LINK](https://steganography-lab.vercel.app/)
+
+---
 
 ## 📋 Table of Contents
 
