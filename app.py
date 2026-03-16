@@ -7,6 +7,7 @@ Purpose: Web interface for the data integrity verification system
 import os
 import json
 import sys
+import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
 from werkzeug.utils import secure_filename
@@ -21,7 +22,15 @@ from integrity_verifier import IntegrityVerifier
 
 
 # Configuration
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+# Detect if running on Vercel (serverless environment)
+IS_VERCEL = os.environ.get('VERCEL', False)
+
+# Use /tmp for serverless, ./uploads for local
+if IS_VERCEL:
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'dat', 'bin', 'log'}
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
@@ -30,7 +39,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
 
 # Create upload folder if it doesn't exist
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except (OSError, PermissionError):
+    # If unable to create folder (e.g., on read-only filesystem), use temp directory
+    UPLOAD_FOLDER = tempfile.gettempdir()
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Global instances
 client = Client(client_id="client_001", block_size=4096)
@@ -77,6 +91,7 @@ def upload_file():
     """
     global current_file_id, current_metadata
     
+    temp_path = None
     try:
         # Check if file is in request
         if 'file' not in request.files:
@@ -92,10 +107,18 @@ def upload_file():
                 "error": "File type not allowed. Allowed: " + ', '.join(ALLOWED_EXTENSIONS)
             }), 400
         
-        # Save file temporarily
+        # Save file to temporary location
         filename = secure_filename(file.filename)
-        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(temp_path)
+        try:
+            temp_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(temp_path)
+        except (OSError, PermissionError):
+            # Fallback to system temp directory if UPLOAD_FOLDER is not writable
+            temp_fd, temp_path = tempfile.mkstemp(suffix='.tmp')
+            try:
+                file.save(temp_path)
+            finally:
+                os.close(temp_fd)
         
         # Process file
         file_data = client.process_file(temp_path)
@@ -125,6 +148,14 @@ def upload_file():
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+    finally:
+        # Clean up temporary file
+        if temp_path and os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except (OSError, PermissionError):
+                pass  # Silently ignore cleanup errors
 
 
 @app.route('/api/challenge', methods=['POST'])
