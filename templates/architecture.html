@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - Cloud Data Integrity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        nav {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .main-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #667eea;
+            margin: 20px 0 10px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .diagram {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            line-height: 1.5;
+        }
+
+        .component-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .component-box h3 {
+            margin-top: 0;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ System Architecture & Design</h1>
+            <p>Technical Design of Cloud Data Integrity Verification</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/concepts">Concepts</a></li>
+                <li><a href="/architecture">Architecture</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h2>1. System Architecture Overview</h2>
+            
+            <div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                        SYSTEM ARCHITECTURE                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────┐      Challenge      ┌─────────────────────┐  │
+│  │  Client/User │─────────────────────│ Cloud Storage Server│  │
+│  │              │◄────Response────────│                     │  │
+│  │  - File      │                     │  - Store blocks     │  │
+│  │  - Root Hash │                     │  - Respond to       │  │
+│  │  - Merkle    │                     │    challenges       │  │
+│  │    Proof     │                     │                     │  │
+│  └──────────────┘                     └─────────────────────┘  │
+│        ▲                                                         │
+│        │                                                         │
+│        │ Audit Requests                                          │
+│        │                                                         │
+│        │                                                         │
+│  ┌──────────────────────────────────────────┐                   │
+│  │  Third Party Auditor (TPA)               │                   │
+│  │                                          │                   │
+│  │  - Generate challenges                   │                   │
+│  │  - Verify responses                      │                   │
+│  │  - Maintain audit logs                   │                   │
+│  │  - Generate reports                      │                   │
+│  └──────────────────────────────────────────┘                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+            </div>
+
+            <h2>2. System Components</h2>
+            
+            <div class="component-box">
+                <h3>A. Client/User Component</h3>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Upload files to cloud server</li>
+                    <li>Split files into fixed-size blocks</li>
+                    <li>Build Merkle tree from blocks</li>
+                    <li>Store root hash securely locally</li>
+                    <li>Generate integrity verification challenges</li>
+                    <li>Verify server responses</li>
+                </ul>
+                <p><strong>Data Stored Locally:</strong></p>
+                <ul>
+                    <li>Root hash of Merkle tree</li>
+                    <li>File metadata (name, size, block count)</li>
+                    <li>Block hashes</li>
+                    <li>Proof paths for verification</li>
+                </ul>
+                <p><strong>Key Operations:</strong></p>
+                <table>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                        <th>Complexity</th>
+                    </tr>
+                    <tr>
+                        <td>File Split</td>
+                        <td>File</td>
+                        <td>Blocks</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td>Tree Building</td>
+                        <td>Blocks</td>
+                        <td>Merkle Tree</td>
+                        <td>O(n log n)</td>
+                    </tr>
+                    <tr>
+                        <td>Challenge Gen.</td>
+                        <td>File ID, Block Indices</td>
+                        <td>Challenge</td>
+                        <td>O(k) k=blocks</td>
+                    </tr>
+                    <tr>
+                        <td>Response Verify</td>
+                        <td>Block Data, Proof</td>
+                        <td>Verification Result</td>
+                        <td>O(log n)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="component-box">
+                <h3>B. Cloud Storage Server Component</h3>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Receive and store file blocks</li>
+                    <li>Maintain file metadata</li>
+                    <li>Respond to client challenges</li>
+                    <li>Return requested blocks with proofs</li>
+                    <li>Maintain operation logs</li>
+                </ul>
+                <p><strong>Data Stored on Server:</strong></p>
+                <ul>
+                    <li>All file blocks</li>
+                    <li>File metadata</li>
+                    <li>Client information</li>
+                    <li>Operation logs</li>
+                </ul>
+                <p><strong>Server Capabilities:</strong></p>
+                <ul>
+                    <li>Efficient block retrieval: O(1) per block</li>
+                    <li>Challenge response generation: O(k)</li>
+                    <li>Scalable storage architecture</li>
+                    <li>Redundancy and backup mechanisms</li>
+                </ul>
+            </div>
+
+            <div class="component-box">
+                <h3>C. Third Party Auditor (TPA) Component</h3>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Independent verification of data integrity</li>
+                    <li>Generate random challenges</li>
+                    <li>Verify server responses</li>
+                    <li>Maintain audit reports</li>
+                    <li>Detect tampering or data loss</li>
+                </ul>
+                <p><strong>Audit Process:</strong></p>
+                <ol>
+                    <li>Select random blocks to challenge</li>
+                    <li>Send challenge to cloud server</li>
+                    <li>Receive and verify response</li>
+                    <li>Check block integrity</li>
+                    <li>Generate audit report</li>
+                </ol>
+            </div>
+
+            <div class="component-box">
+                <h3>D. Integrity Verification Module</h3>
+                <p><strong>Key Functions:</strong></p>
+                <ul>
+                    <li>Merkle tree construction and validation</li>
+                    <li>Block hash verification</li>
+                    <li>Merkle proof verification</li>
+                    <li>Tampering detection</li>
+                    <li>Attack simulation for testing</li>
+                </ul>
+            </div>
+
+            <h2>3. Data Flow Diagrams</h2>
+
+            <h3>A. File Upload Flow</h3>
+            <div class="diagram">
+┌──────────┐
+│File Input│
+└────┬─────┘
+     │
+     ▼
+┌─────────────────┐
+│ Split into      │ - 4KB blocks
+│ Fixed Blocks    │ - Handle padding
+└────┬────────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Generate        │ - SHA-256 hash
+│ Block Hashes    │ - for each block
+└────┬────────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Build Merkle    │ - Binary tree
+│   Tree          │ - Combine hashes
+└────┬────────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Extract Root    │ - Store locally
+│   Hash          │ - Secure storage
+└────┬────────────┘
+     │
+     ▼
+┌──────────────┐
+│Send To Cloud │ - Blocks + metadata
+│  Server      │ - For storage
+└──────────────┘
+            </div>
+
+            <h3>B. Verification Challenge Flow</h3>
+            <div class="diagram">
+┌──────────┐
+│ Client   │
+└────┬─────┘
+     │ 1. Generate Challenge
+     │    - Select random blocks
+     │    - Include root hash
+     ▼
+┌──────────────────┐
+│ Cloud Server     │
+└────┬─────────────┘
+     │ 2. Receive Challenge
+     │ 3. Retrieve Blocks
+     │ 4. Generate Response
+     ▼
+┌──────────────────┐
+│ Client           │
+└────┬─────────────┘
+     │ 5. Receive Response
+     │ 6. Hash blocks
+     │ 7. Build Merkle proofs
+     │ 8. Verify against root
+     ▼
+┌──────────────────────┐
+│ Verification Result  │
+│ - Blocks verified    │
+│ - Tampering detected │
+│ - Report generated   │
+└──────────────────────┘
+            </div>
+
+            <h3>C. Attack Simulation Flow</h3>
+            <div class="diagram">
+┌──────────────────┐
+│ Original Blocks  │
+└────┬─────────────┘
+     │
+     ▼
+┌─────────────────────┐
+│ Tamper Block N:     │
+│ - Bit flip          │
+│ - Block replacement │
+│ - Partial corruption│
+└────┬────────────────┘
+     │
+     ▼
+┌──────────────────────┐
+│ Modified Block Hash  │
+│ (Different from      │
+│  original)           │
+└────┬─────────────────┘
+     │
+     ▼
+┌──────────────────────┐
+│ Client Challenge     │
+│ (Includes block N)   │
+└────┬─────────────────┘
+     │
+     ▼
+┌──────────────────────┐
+│ Verification Fails   │
+│ Tampering Detected!  │
+└──────────────────────┘
+            </div>
+
+            <h2>4. Protocol: Merkle Tree Verification</h2>
+
+            <div class="component-box">
+                <h3>Merkle Proof Verification Algorithm</h3>
+                <p><strong>Input:</strong></p>
+                <ul>
+                    <li>Block data (B)</li>
+                    <li>Block index (i)</li>
+                    <li>Proof path (P): List of (direction, hash) pairs</li>
+                    <li>Root hash (R): Expected root</li>
+                </ul>
+                <p><strong>Algorithm:</strong></p>
+                <ol>
+                    <li>current_hash = SHA256(B)</li>
+                    <li>for each (direction, sibling_hash) in reversed(P):</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;if direction == "left":</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current_hash = SHA256(sibling_hash + current_hash)</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;else:</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current_hash = SHA256(current_hash + sibling_hash)</li>
+                    <li>return (current_hash == R)</li>
+                </ol>
+                <p><strong>Output:</strong></p>
+                <ul>
+                    <li>Boolean: True if block is verified, False if tampering detected</li>
+                </ul>
+                <p><strong>Complexity:</strong></p>
+                <ul>
+                    <li>Time: O(log n) - number of tree levels</li>
+                    <li>Space: O(log n) - for proof storage</li>
+                    <li>Communication: O(log n) - for transmitting proof</li>
+                </ul>
+            </div>
+
+            <h2>5. Sequence Diagram: Complete Workflow</h2>
+
+            <div class="diagram">
+Client                Cloud Server              TPA
+                
+ │                        │                      │
+ ├─── Upload File ───────→│                      │
+ │                        │ Store blocks         │
+ │◄──── File ID ─────────│                      │
+ │
+ │
+ ├─── Challenge ─────────→│                      │
+ │                        │ Retrieve blocks     │
+ │◄──── Response ────────│                      │
+ │
+ ├───Verify locally───┤
+ │
+ │                        │                      │
+ └───── Audit Request ────────────────────────→│
+ │                        │                      │
+ │                        │◄── Challenge ───────┤
+ │                        │                      │
+ │                        ├── Response ────────→│
+ │                        │                      │
+ │◄────────────── Audit Report ─────────────────┤
+            </div>
+
+            <h2>6. File Processing Parameters</h2>
+
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Default Value</th>
+                    <th>Typical Range</th>
+                    <th>Impact</th>
+                </tr>
+                <tr>
+                    <td>Block Size</td>
+                    <td>4 KB</td>
+                    <td>1 KB - 1 MB</td>
+                    <td>Larger blocks = fewer hashes, but lower granularity</td>
+                </tr>
+                <tr>
+                    <td>Challenge Count</td>
+                    <td>5 blocks</td>
+                    <td>1 - 50 blocks</td>
+                    <td>More challenges = higher detection probability</td>
+                </tr>
+                <tr>
+                    <td>Audit Frequency</td>
+                    <td>Periodic</td>
+                    <td>Weekly - Monthly</td>
+                    <td>More frequent = better security, more overhead</td>
+                </tr>
+                <tr>
+                    <td>Hash Algorithm</td>
+                    <td>SHA-256</td>
+                    <td>SHA-256, SHA-3</td>
+                    <td>SHA-256 is secure and widely supported</td>
+                </tr>
+            </table>
+
+            <h2>7. Security Analysis</h2>
+
+            <div class="component-box">
+                <h3>Threat Model</h3>
+                <ul>
+                    <li><strong>Honest-but-Curious Server:</strong> Server follows protocol but tries to learn data</li>
+                    <li><strong>Malicious Server:</strong> Server modifies or deletes blocks</li>
+                    <li><strong>Network Attacker:</strong> Intercepts and modifies messages</li>
+                    <li><strong>Collusion:</strong> Server and attacker work together</li>
+                </ul>
+                <h3>Defense Mechanisms</h3>
+                <ul>
+                    <li><strong>Merkle Tree:</strong> Any single block change is detected</li>
+                    <li><strong>SHA-256:</strong> Cryptographically secure hashing</li>
+                    <li><strong>Random Challenges:</strong> Unpredictable audit pattern</li>
+                    <li><strong>TPA Verification:</strong> Independent audit</li>
+                    <li><strong>Root Hash Protection:</strong> Secure local storage</li>
+                </ul>
+                <h3>Security Guarantees</h3>
+                <ul>
+                    <li>Detects tampering with probability (1 - (1-1/n)^k)</li>
+                    <li>Where n = number of blocks, k = challenged blocks</li>
+                    <li>After k challenges: 99.5% detection probability for single modified block</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Cloud Data Integrity Verification System | Final Year Project</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concepts - Cloud Data Integrity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        nav {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .main-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #667eea;
+            margin: 20px 0 10px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .concept-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .concept-card h3 {
+            margin-top: 0;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .diagram {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            line-height: 1.4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Key Concepts & Fundamentals</h1>
+            <p>Understanding Cloud Storage Security and Data Integrity</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/concepts">Concepts</a></li>
+                <li><a href="/architecture">Architecture</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <h2>1. Cloud Storage Security</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>Cloud Storage Security is the practice of protecting digital assets stored on cloud infrastructure from unauthorized access, modification, or deletion.</p>
+                <h3>Key Components</h3>
+                <ul>
+                    <li><strong>Data Confidentiality:</strong> Data should be encrypted and accessible only to authorized users</li>
+                    <li><strong>Data Integrity:</strong> Data remains unchanged during storage and transmission</li>
+                    <li><strong>Data Availability:</strong> Data remains accessible when needed</li>
+                    <li><strong>Authentication:</strong> Verify identity of users accessing data</li>
+                    <li><strong>Access Control:</strong> Ensure only authorized users can access data</li>
+                </ul>
+                <h3>Challenges in Cloud Storage</h3>
+                <ul>
+                    <li>Data is stored on servers controlled by cloud providers (untrusted)</li>
+                    <li>User has no direct control over storage hardware</li>
+                    <li>Server administrators may have access to user data</li>
+                    <li>Risk of data breaches and unauthorized modifications</li>
+                    <li>Need for efficient remote verification without full file download</li>
+                </ul>
+            </div>
+
+            <h2>2. Data Integrity</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>Data integrity is the assurance that data is accurate, consistent, and has not been altered or corrupted during storage or transmission.</p>
+                <h3>Importance</h3>
+                <ul>
+                    <li>Critical for sensitive data (medical, financial, legal)</li>
+                    <li>Ensures data reliability and trustworthiness</li>
+                    <li>Detects accidental corruption and malicious tampering</li>
+                    <li>Required for compliance with regulations (GDPR, HIPAA)</li>
+                </ul>
+                <h3>Techniques for Verification</h3>
+                <ul>
+                    <li><strong>Checksums:</strong> Simple hash-based verification</li>
+                    <li><strong>Cryptographic Hashing:</strong> SHA-256 provides strong verification</li>
+                    <li><strong>Digital Signatures:</strong> Verify authenticity and integrity</li>
+                    <li><strong>Merkle Trees:</strong> Efficient verification of large datasets</li>
+                </ul>
+            </div>
+
+            <h2>3. Third Party Auditor (TPA)</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>A Third Party Auditor is an independent entity that verifies data integrity on behalf of the data owner without having access to the actual data.</p>
+                <h3>Role and Responsibilities</h3>
+                <ul>
+                    <li>Periodically challenge the cloud server to prove data possession</li>
+                    <li>Verify integrity without downloading entire files</li>
+                    <li>Act as a trusted intermediary between user and cloud provider</li>
+                    <li>Generate audit reports and maintain verification records</li>
+                </ul>
+                <h3>Architecture</h3>
+                <div class="diagram">
+User (Data Owner)
+    ↓
+Third Party Auditor (TPA)
+    ↓
+Cloud Storage Server
+                </div>
+                <h3>Advantages</h3>
+                <ul>
+                    <li>User doesn't need to continuously monitor files</li>
+                    <li>Reduces computational burden on user's system</li>
+                    <li>Can perform frequent audits efficiently</li>
+                    <li>Provides independent verification of integrity</li>
+                </ul>
+            </div>
+
+            <h2>4. Provable Data Possession (PDP)</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>Provable Data Possession is a technique that allows a user to challenge a storage server to prove that it possesses the user's data without requiring the user to download the entire file.</p>
+                <h3>Key Characteristics</h3>
+                <ul>
+                    <li>Server must respond with evidence of data possession</li>
+                    <li>Challenge-response protocol between user and server</li>
+                    <li>Efficient: O(1) server computation and O(log n) user verification</li>
+                    <li>Probabilistic verification: each challenge has a small probability of detecting tampering</li>
+                </ul>
+                <h3>Protocol Steps</h3>
+                <ol>
+                    <li><strong>Setup:</strong> File is encoded and stored on server</li>
+                    <li><strong>Challenge:</strong> User sends challenge requesting specific blocks</li>
+                    <li><strong>Proof:</strong> Server responds with proof of possession</li>
+                    <li><strong>Verification:</strong> User verifies proof locally without downloading full file</li>
+                </ol>
+                <h3>Mathematical Basis</h3>
+                <p>PDP uses homomorphic properties to efficiently combine multiple block proofs into a single compact proof.</p>
+            </div>
+
+            <h2>5. Proof of Retrievability (PoR)</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>Proof of Retrievability is a stronger guarantee than PDP. It not only proves data possession but also guarantees that the data is retrievable in its entirety.</p>
+                <h3>Differences from PDP</h3>
+                <table>
+                    <tr>
+                        <th>Property</th>
+                        <th>Provable Data Possession (PDP)</th>
+                        <th>Proof of Retrievability (PoR)</th>
+                    </tr>
+                    <tr>
+                        <td>Proves Possession</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Guarantees Retrievability</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Proof Size</td>
+                        <td>Small</td>
+                        <td>Larger (includes redundancy)</td>
+                    </tr>
+                    <tr>
+                        <td>Complexity</td>
+                        <td>O(log n)</td>
+                        <td>O(n) with erasure codes</td>
+                    </tr>
+                    <tr>
+                        <td>Use Case</td>
+                        <td>General data possession</td>
+                        <td>Critical/archival data</td>
+                    </tr>
+                </table>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Uses error-correcting codes (erasure codes) for redundancy</li>
+                    <li>Even if some blocks are lost/corrupted, data is still retrievable</li>
+                    <li>Stronger guarantee but higher overhead</li>
+                </ul>
+            </div>
+
+            <h2>6. Merkle Hash Tree</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>A Merkle tree is a binary tree where each leaf node is labeled with a cryptographic hash of a data block, and each internal node is labeled with the hash of the concatenation of its children's hashes.</p>
+                <h3>Structure</h3>
+                <div class="diagram">
+                                   Root Hash
+                                       ↓
+                          ┌──────────────┴──────────────┐
+                          ↓                             ↓
+                    Hash (L1+L2)                  Hash (L3+L4)
+                      ↙      ↘                      ↙      ↘
+                    Hash(L1) Hash(L2)            Hash(L3) Hash(L4)
+                      ↙        ↓        ↓         ↓
+                    Block1   Block2   Block3   Block4
+                </div>
+                <h3>Properties</h3>
+                <ul>
+                    <li><strong>Efficiency:</strong> Verify single block in O(log n) time</li>
+                    <li><strong>Completeness:</strong> Root hash represents integrity of all blocks</li>
+                    <li><strong>Tamper Detection:</strong> Change in any block changes root hash</li>
+                    <li><strong>Minimal Proof:</strong> Only need log(n) hashes to prove one block</li>
+                </ul>
+                <h3>Verification Process</h3>
+                <ol>
+                    <li>Hash the target block</li>
+                    <li>Combine with sibling hash at each level moving up</li>
+                    <li>Compare final root with stored root hash</li>
+                    <li>If match: block is intact; If mismatch: tampering detected</li>
+                </ol>
+                <h3>Advantages</h3>
+                <ul>
+                    <li>Efficient for large files with many blocks</li>
+                    <li>Requires only O(log n) hashes for verification proof</li>
+                    <li>Widely used in blockchain, file systems, and cloud storage</li>
+                    <li>Enables incremental verification</li>
+                </ul>
+                <h3>Use Cases</h3>
+                <ul>
+                    <li>Bitcoin and blockchain technology</li>
+                    <li>File system verification (IPFS, Git)</li>
+                    <li>Certificate transparency logs</li>
+                    <li>Cloud storage integrity verification</li>
+                    <li>Torrent file sharing</li>
+                </ul>
+            </div>
+
+            <h2>7. SHA-256 Hashing</h2>
+            
+            <div class="concept-card">
+                <h3>Definition</h3>
+                <p>SHA-256 (Secure Hash Algorithm 256-bit) is a cryptographic hash function that produces a 256-bit (32-byte) hash value, typically represented as a 64-character hexadecimal string.</p>
+                <h3>Characteristics</h3>
+                <ul>
+                    <li><strong>Output Size:</strong> 256 bits (32 bytes)</li>
+                    <li><strong>Input Size:</strong> Unlimited</li>
+                    <li><strong>Deterministic:</strong> Same input always produces same output</li>
+                    <li><strong>One-way:</strong> Cannot reverse-engineer input from hash</li>
+                    <li><strong>Collision-resistant:</strong> Finding two inputs with same hash is computationally infeasible</li>
+                </ul>
+                <h3>Properties</h3>
+                <ul>
+                    <li><strong>Avalanche Effect:</strong> Small change in input completely changes output</li>
+                    <li><strong>Pre-image Resistance:</strong> Cannot find input given only the hash</li>
+                    <li><strong>Collision Resistance:</strong> Cannot find two different inputs with same hash</li>
+                </ul>
+                <h3>Example</h3>
+                <p>Input: "Cloud Data Integrity"<br>
+                   SHA-256: 9a8e4f3c2b1d5f6a8c7e9d3b1f5a8c6e2d4f7a9b1c3e5d8f0a2b4c6e8f1a3d</p>
+                <h3>Applications in This Project</h3>
+                <ul>
+                    <li>Hash each data block</li>
+                    <li>Build Merkle tree using SHA-256</li>
+                    <li>Generate root hash for verification</li>
+                    <li>Verify block integrity</li>
+                </ul>
+            </div>
+
+            <h2>8. Integration: How It All Works Together</h2>
+            
+            <div class="concept-card">
+                <h3>Complete Workflow</h3>
+                <ol>
+                    <li><strong>File Upload:</strong> User uploads file to untrusted cloud server</li>
+                    <li><strong>Block Creation:</strong> File is split into fixed-size blocks (e.g., 4KB each)</li>
+                    <li><strong>Hashing:</strong> Each block is hashed using SHA-256</li>
+                    <li><strong>Merkle Tree:</strong> Hashes are organized in Merkle tree structure</li>
+                    <li><strong>Root Hash Storage:</strong> Only root hash is stored securely locally</li>
+                    <li><strong>Cloud Storage:</strong> File blocks are stored on untrusted server</li>
+                    <li><strong>Challenge Generation:</strong> User sends challenge requesting specific blocks</li>
+                    <li><strong>Server Response:</strong> Server provides requested blocks</li>
+                    <li><strong>Verification:</strong> User verifies blocks using Merkle proof</li>
+                    <li><strong>Audit Report:</strong> Generate report on data integrity status</li>
+                </ol>
+                <h3>Security Guarantees</h3>
+                <ul>
+                    <li>Detects any tampering with data blocks</li>
+                    <li>Efficient verification without full file download</li>
+                    <li>Probabilistic guarantee against undetected tampering</li>
+                    <li>TPA can independently verify integrity</li>
+                    <li>Secure against honest-but-curious cloud provider</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Cloud Data Integrity Verification System | Final Year Project</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+This is a sample text file with realistic data for testing 
+the Cloud Data Integrity Verification System.
+
+This system is designed to verify that files stored in an untrusted 
+cloud storage server have not been tampered with or corrupted.
+
+Key Features:
+- Split files into fixed-size blocks (4KB default)
+- Generate SHA-256 hashes for each block
+- Build Merkle tree for efficient verification
+- Challenge-response verification protocol
+- Detect tampering without downloading entire file
+
+File Contents:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+Data Integrity Verification leverages:
+1. Cryptographic Hashing: SHA-256 for secure hashing
+2. Merkle Trees: Binary tree of hashes for efficient proofs
+3. Provable Data Possession: Challenge-response protocol
+4. Block Verification: Detect changes in individual blocks
+
+Security Advantages:
+- User keeps only root hash locally
+- Can verify any block without downloading all data
+- Probabilistic guarantee against undetected tampering
+- Efficient: O(log n) verification complexity
+- Simple to implement and understand
+
+This sample file is approximately 1KB and can be split into
+multiple 4KB blocks for testing purposes.
+
+Testing Scenarios:
+1. Normal Upload: Upload file and verify integrity
+2. Challenge Response: Generate challenges and verify responses
+3. Attack Simulation: Tamper with blocks and detect changes
+4. Audit Report: Generate comprehensive audit results
+
+All data is preserved with this system!
